@@ -1,0 +1,25 @@
+{
+  "name": "quickbite-food-pos",
+  "version": "1.0.0",
+  "description": "Mobile Food Ordering, Kitchen Token & Thermal Billing POS System (Frontend + Backend)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "food-order",
+    "billing",
+    "pos",
+    "pwa",
+    "restaurant",
+    "thermal-printer",
+    "kitchen-token"
+  ],
+  "author": "ATHIP, AADHIL, KIRUBA, MOUSIK, KAMESH",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
