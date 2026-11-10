@@ -1,0 +1,30 @@
+/* QuickBite styles, app-specific controls and print layout. */
+:root { color-scheme: light; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+html.dark { color-scheme: dark; }
+* { -webkit-tap-highlight-color: transparent; }
+body { padding-bottom: env(safe-area-inset-bottom); }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+.veg-badge, .non-veg-badge { width: 13px; height: 13px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid; border-radius: 2px; flex-shrink: 0; }
+.veg-badge { border-color: #16803c; }
+.veg-badge::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #16803c; }
+.non-veg-badge { border-color: #b91c1c; }
+.non-veg-badge::after { content: ''; width: 7px; height: 7px; background: #b91c1c; border-radius: 50%; }
+.touch-press { transition: transform .12s ease, filter .12s ease; }
+.touch-press:active { transform: scale(.97); }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.animate-slide-up { animation: slide-up .2s ease-out; }
+@keyframes slide-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.toast-msg { animation: toast-in .2s ease-out; }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.thermal-receipt, .kot-slip { color: #111827; }
+@media print {
+  @page { margin: 0; size: 80mm auto; }
+  html, body { width: 80mm !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; background: #fff !important; color: #000 !important; }
+  body * { visibility: hidden !important; }
+  #receipt-render-box, #receipt-render-box * { visibility: visible !important; }
+  #receipt-render-box { position: absolute !important; left: 0 !important; top: 0 !important; width: 72mm !important; margin: 0 !important; padding: 0 !important; }
+  #printable-receipt, #printable-kot { width: 72mm !important; max-width: none !important; margin: 0 !important; padding: 3mm !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; font-size: 10px !important; }
+  .no-print { display: none !important; }
+}
