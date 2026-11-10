@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#ef4444">
+  <title>QuickBite - Food Order & Billing System</title>
+
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="QuickBite">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body
+  class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased selection:bg-red-500 selection:text-white pb-safe min-h-screen transition-colors duration-200">
+
+  <!-- =========================================================================
+       TOP HEADER & APP BAR
+       ========================================================================= -->
+  <header
+    class="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200/80 dark:border-gray-800 px-3 sm:px-5 py-2.5 transition-colors">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+
+      <!-- Store Identity -->
+      <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="App.switchTab('pos')">
+        <div
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-red-500/20 flex-shrink-0">
+          <i data-lucide="utensils" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <h1 id="header-store-name"
+            class="font-black text-sm sm:text-base text-gray-900 dark:text-white leading-tight truncate">
+            QuickBite POS
+          </h1>
+          <p id="header-store-tagline" class="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 truncate">
+            Food Order & Billing
+          </p>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Tabs (lg screens) -->
+      <nav
+        class="hidden lg:flex items-center gap-1 bg-gray-100/80 dark:bg-gray-800/80 p-1 rounded-2xl border border-gray-200/60 dark:border-gray-700/60">
+        <button id="desktop-nav-btn-pos" onclick="App.switchTab('pos')"
+          class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs bg-red-600 text-white">
+          <i data-lucide="utensils" class="w-4 h-4"></i>
+          <span>Order POS</span>
+        </button>
+
+        <button id="desktop-nav-btn-orders" onclick="App.switchTab('orders')"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-700">
+          <i data-lucide="chef-hat" class="w-4 h-4"></i>
+          <span>Kitchen KDS</span>
+          <span
+            class="kitchen-badge-count hidden bg-amber-500 text-white font-mono font-black text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+        </button>
+
+        <button id="desktop-nav-btn-analytics" onclick="App.switchTab('analytics')"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-700">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+          <span>Sales & Analytics</span>
+        </button>
+
+        <button id="desktop-nav-btn-menu" onclick="App.switchTab('menu')"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-700">
+          <i data-lucide="layers" class="w-4 h-4"></i>
+          <span>Dishes & Menu</span>
+        </button>
+
+        <button id="desktop-nav-btn-settings" onclick="App.switchTab('settings')"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-700">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <!-- Utility Action Buttons -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+        <!-- NEW FEATURE: Fullscreen Mode Kiosk Toggle -->
+        <button onclick="App.toggleFullscreen()"
+          class="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl touch-press"
+          title="Toggle Fullscreen Counter Mode">
+          <i data-lucide="maximize-2" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Sound FX Toggle -->
+        <button onclick="App.toggleSound()"
+          class="sound-toggle-btn p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl touch-press"
+          title="Toggle Sound Effects">
+          <i data-lucide="volume-2" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button onclick="App.toggleDarkMode()"
+          class="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl touch-press"
+          title="Toggle Dark/Light Mode">
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:inline"></i>
+          <i data-lucide="sun" class="w-4 h-4 inline dark:hidden"></i>
+        </button>
+
+        <!-- Phone App / Install Guide -->
+        <button id="pwa-install-btn" onclick="App.openPhoneUploadGuideModal()"
+          class="flex items-center gap-1 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 text-xs font-bold px-2.5 py-1.5 rounded-xl touch-press transition"
+          title="Install or Upload to Phone">
+          <i data-lucide="smartphone" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Phone App</span>
+        </button>
+
+        <!-- Clear Cart Button -->
+        <button
+          onclick="if(confirm('Clear current active cart?')) { OrdersManager.clearCart(); App.renderMenu(); App.renderCart(); }"
+          class="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl touch-press"
+          title="Reset Cart">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PWA Notification Banner -->
+  <div id="pwa-install-banner"
+    class="hidden bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 text-white px-4 py-2 text-xs flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-2">
+      <i data-lucide="download" class="w-4 h-4"></i>
+      <span class="font-semibold">Install QuickBite on your mobile home screen!</span>
+    </div>
+    <button onclick="App.openPhoneUploadGuideModal()"
+      class="bg-white text-red-600 font-extrabold px-3 py-1 rounded-lg text-xs shadow-xs touch-press">Install
+      Now</button>
+  </div>
+
+  <!-- =========================================================================
+       MAIN BODY WRAPPER
+       ========================================================================= -->
+  <main class="max-w-7xl mx-auto p-3 sm:p-5">
+
+    <!-- =====================================================================
+         TAB 1: POS & FOOD ORDERING VIEW
+         ===================================================================== -->
+    <section id="tab-content-pos" class="space-y-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        <!-- LEFT COLUMN: Menu catalog & Search -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-3.5">
+
+          <!-- Search, Sorting & Filter Bar -->
+          <div
+            class="bg-white dark:bg-gray-800 p-2.5 sm:p-3 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+            <!-- Search Input -->
+            <div class="relative flex-1 min-w-[180px]">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input id="search-input" type="text" placeholder="Search dishes or press '/' key..."
+                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl pl-9 pr-8 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition" />
+              <span
+                class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono text-gray-400 bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">/</span>
+            </div>
+
+            <!-- NEW FEATURE: Sort Dishes Dropdown -->
+            <select id="menu-sort-select" onchange="App.setSort(this.value)"
+              class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-xl px-2.5 py-2 focus:outline-none focus:ring-1 focus:ring-red-500 cursor-pointer">
+              <option value="default">Sort: Default</option>
+              <option value="popular">Popular / Specials ★</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+            </select>
+
+            <!-- Veg Only Toggle -->
+            <label
+              class="flex items-center gap-2 cursor-pointer select-none bg-gray-50 dark:bg-gray-900 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300">
+              <span class="veg-badge"></span>
+              <span class="hidden sm:inline">Veg</span>
+              <input type="checkbox" id="veg-only-toggle"
+                class="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5">
+            </label>
+
+            <!-- Quick Off-Menu Custom Item Button -->
+            <button onclick="App.openQuickCustomItemModal()"
+              class="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-xs font-bold px-3 py-2 rounded-xl touch-press transition"
+              title="Add off-menu dish on the fly">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-red-500"></i>
+              <span class="whitespace-nowrap">Custom</span>
+            </button>
+          </div>
+
+          <!-- Horizontal Category Filter Pills -->
+          <div class="overflow-x-auto pb-1 no-scrollbar">
+            <div id="categories-bar" class="flex items-center gap-2 min-w-max">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Food Items Grid -->
+          <div id="menu-items-grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Desktop Sticky POS Cart & Billing Panel -->
+        <div class="hidden lg:block lg:col-span-5 xl:col-span-4">
+          <div
+            class="sticky top-20 bg-white dark:bg-gray-800 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-md p-4 flex flex-col h-[calc(100vh-6.2rem)]">
+
+            <!-- Panel Header -->
+            <div class="border-b border-gray-100 dark:border-gray-700 pb-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center">
+                  <i data-lucide="receipt" class="w-4 h-4"></i>
+                </div>
+                <h2 class="font-extrabold text-sm sm:text-base text-gray-900 dark:text-white">Active Bill</h2>
+              </div>
+              <!-- Table Selector -->
+              <select id="cart-table-select"
+                class="table-select-elem text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-0 rounded-xl px-2.5 py-1.5 focus:ring-2 focus:ring-red-500 cursor-pointer">
+                <!-- Tables populated -->
+              </select>
+            </div>
+
+            <!-- Customer Details Input -->
+            <div class="grid grid-cols-2 gap-2 pt-2.5">
+              <input id="cart-cust-name" type="text" placeholder="Customer Name"
+                class="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-red-500" />
+              <input id="cart-cust-phone" type="tel" placeholder="WhatsApp Phone"
+                class="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-red-500" />
+            </div>
+
+            <!-- Items List Container -->
+            <div
+              class="cart-items-container flex-1 overflow-y-auto py-2 my-2 divide-y divide-gray-50 dark:divide-gray-800">
+              <!-- Cart items injected -->
+            </div>
+
+            <!-- Discount, Tax & Summary Breakdown -->
+            <div class="border-t border-gray-100 dark:border-gray-700 pt-3 space-y-2 text-xs">
+
+              <!-- NEW FEATURE: Quick Discount Presets Chips -->
+              <div class="bg-gray-50 dark:bg-gray-900 p-2 rounded-xl space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-gray-600 dark:text-gray-300">Discount:</span>
+                  <div class="flex items-center gap-1">
+                    <input id="cart-discount-value" type="number" min="0" value="0"
+                      class="w-14 text-right bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-1.5 py-0.5 text-xs font-bold text-gray-900 dark:text-white" />
+                    <select id="cart-discount-type"
+                      class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-1 py-0.5 text-[11px] font-bold text-gray-700 dark:text-gray-300">
+                      <option value="percent">%</option>
+                      <option value="flat">Flat</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- 1-Tap Discount Buttons -->
+                <div class="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.5">
+                  <button type="button" onclick="App.setQuickDiscount('percent', 0)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-600 dark:text-gray-400 hover:text-red-600">0%</button>
+                  <button type="button" onclick="App.setQuickDiscount('percent', 5)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-red-500">5%</button>
+                  <button type="button" onclick="App.setQuickDiscount('percent', 10)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-red-500">10%</button>
+                  <button type="button" onclick="App.setQuickDiscount('percent', 15)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-red-500">15%</button>
+                  <button type="button" onclick="App.setQuickDiscount('flat', 50)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-red-500">₹50</button>
+                  <button type="button" onclick="App.setQuickDiscount('flat', 100)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-red-500">₹100</button>
+                </div>
+              </div>
+
+              <!-- Subtotal -->
+              <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal" class="font-bold font-mono text-gray-900 dark:text-gray-100">₹0.00</span>
+              </div>
+
+              <!-- Discount Row -->
+              <div id="cart-discount-row" class="hidden flex justify-between text-emerald-600 dark:text-emerald-400">
+                <span>Discount:</span>
+                <span id="cart-discount-amt" class="font-bold font-mono">-₹0.00</span>
+              </div>
+
+              <!-- Tax Row -->
+              <div id="cart-tax-row" class="hidden flex justify-between text-gray-600 dark:text-gray-400">
+                <span id="cart-tax-label">GST:</span>
+                <span id="cart-tax-amt" class="font-bold font-mono text-gray-900 dark:text-gray-100">+₹0.00</span>
+              </div>
+
+              <!-- Grand Total -->
+              <div
+                class="pt-2 border-t border-dashed border-gray-200 dark:border-gray-700 flex justify-between items-baseline">
+                <span class="font-black text-xs uppercase tracking-wider text-gray-800 dark:text-gray-200">Total
+                  Payable:</span>
+                <span id="cart-grand-total"
+                  class="font-black text-xl text-red-600 dark:text-red-500 font-mono">₹0.00</span>
+              </div>
+
+              <!-- Payment Mode Selector -->
+              <div class="grid grid-cols-3 gap-1.5 pt-1">
+                <button type="button" data-method="cash"
+                  class="payment-method-btn py-1.5 text-xs font-bold rounded-xl border text-center transition flex items-center justify-center gap-1 touch-press">
+                  <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
+                  <span>Cash</span>
+                </button>
+                <button type="button" data-method="upi"
+                  class="payment-method-btn py-1.5 text-xs font-bold rounded-xl border text-center transition flex items-center justify-center gap-1 touch-press">
+                  <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
+                  <span>UPI/QR</span>
+                </button>
+                <button type="button" data-method="card"
+                  class="payment-method-btn py-1.5 text-xs font-bold rounded-xl border text-center transition flex items-center justify-center gap-1 touch-press">
+                  <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
+                  <span>Card</span>
+                </button>
+              </div>
+
+              <!-- Cash Tender Quick-Calculator -->
+              <div id="cash-tender-box" class="p-2 rounded-xl bg-gray-50 dark:bg-gray-900 space-y-1.5">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="text-gray-500 dark:text-gray-400 font-semibold">Cash Given:</span>
+                  <input id="cart-cash-tendered" type="number" placeholder="Enter amount" min="0"
+                    oninput="OrdersManager.cashTendered = parseFloat(this.value) || 0; App.renderCart();"
+                    class="w-24 text-right bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5 text-xs font-mono font-bold" />
+                </div>
+                <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+                  <button type="button" onclick="App.setQuickCash(100)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold">₹100</button>
+                  <button type="button" onclick="App.setQuickCash(200)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold">₹200</button>
+                  <button type="button" onclick="App.setQuickCash(500)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold">₹500</button>
+                  <button type="button" onclick="App.setQuickCash(2000)"
+                    class="px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] font-bold">₹2000</button>
+                </div>
+                <div id="cart-change-row"
+                  class="hidden flex justify-between items-center text-xs text-emerald-600 dark:text-emerald-400 font-bold pt-1 border-t border-dashed border-gray-200 dark:border-gray-700">
+                  <span>Change to Return:</span>
+                  <span id="cart-change-amt" class="font-mono text-sm">₹0.00</span>
+                </div>
+              </div>
+
+              <!-- Checkout & Print Bill Button -->
+              <button onclick="App.processCheckout()"
+                class="w-full bg-red-600 hover:bg-red-700 text-white font-black text-xs sm:text-sm py-3 rounded-xl shadow-md touch-press flex items-center justify-center gap-2 transition mt-1">
+                <i data-lucide="receipt-text" class="w-4 h-4"></i>
+                <span>GENERATE BILL & TOKEN</span>
+                <span class="text-[10px] bg-red-700/60 px-1.5 py-0.5 rounded hidden sm:inline font-mono">Ctrl+↵</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 2: KITCHEN ORDER DISPLAY (KDS) & TOKEN BOARD
+         ===================================================================== -->
+    <section id="tab-content-orders" class="hidden space-y-4">
+      <div
+        class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+        <div>
+          <h2 class="text-base font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+            <i data-lucide="chef-hat" class="w-5 h-5 text-red-600"></i>
+            <span>Kitchen Display System (KDS)</span>
+          </h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Live order queue, token status & kitchen tickets</p>
+        </div>
+
+        <!-- Filter tabs: All, Preparing, Ready, Completed -->
+        <div class="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-900 p-1 rounded-2xl">
+          <button data-status="all" onclick="App.setKitchenFilter('all')"
+            class="kitchen-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-red-600 text-white shadow-xs">
+            All
+          </button>
+          <button data-status="Preparing" onclick="App.setKitchenFilter('Preparing')"
+            class="kitchen-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-transparent text-gray-600 dark:text-gray-300">
+            Preparing 👨‍🍳
+          </button>
+          <button data-status="Ready" onclick="App.setKitchenFilter('Ready')"
+            class="kitchen-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-transparent text-gray-600 dark:text-gray-300">
+            Ready 🔔
+          </button>
+          <button data-status="Completed" onclick="App.setKitchenFilter('Completed')"
+            class="kitchen-filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-transparent text-gray-600 dark:text-gray-300">
+            Completed ✅
+          </button>
+        </div>
+      </div>
+
+      <!-- Orders List Cards Grid -->
+      <div id="orders-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <!-- Dynamically injected -->
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 3: SALES & ANALYTICS VIEW
+         ===================================================================== -->
+    <section id="tab-content-analytics" class="hidden space-y-4">
+      <div
+        class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+        <div>
+          <h2 class="text-base font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+            <i data-lucide="bar-chart-3" class="w-5 h-5 text-emerald-600"></i>
+            <span>Business Sales & Performance</span>
+          </h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Track daily revenue, payment modes, and popular dishes</p>
+        </div>
+        <button onclick="App.exportCsvReport()"
+          class="flex items-center gap-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl shadow-xs touch-press transition">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>Export Excel/CSV</span>
+        </button>
+      </div>
+
+      <!-- Quick Metrics Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Today's Revenue</p>
+          <h3 id="stat-today-revenue"
+            class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-1 font-mono">₹0.00</h3>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Today's Orders</p>
+          <h3 id="stat-today-orders"
+            class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-1 font-mono">0</h3>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Avg. Order Value (AOV)</p>
+          <h3 id="stat-today-aov" class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-1 font-mono">
+            ₹0.00</h3>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+          <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold">All-Time Sales</p>
+          <h3 id="stat-alltime-revenue"
+            class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-1 font-mono">₹0.00</h3>
+        </div>
+      </div>
+
+      <!-- Payment Breakdown & Top Selling Dishes -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Payments by Mode -->
+        <div
+          class="bg-white dark:bg-gray-800 p-4 sm:p-5 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+          <h3 class="font-extrabold text-sm text-gray-900 dark:text-white mb-3 flex items-center gap-1.5">
+            <i data-lucide="wallet" class="w-4 h-4 text-gray-500"></i>
+            <span>Today's Payment Channels</span>
+          </h3>
+          <div class="space-y-3 text-xs">
+            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  <i data-lucide="banknote" class="w-4 h-4 text-emerald-600"></i> Cash
+                </span>
+                <span id="stat-pay-cash" class="font-black font-mono text-gray-900 dark:text-white">₹0.00</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                <div id="bar-pay-cash" class="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                  style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  <i data-lucide="qr-code" class="w-4 h-4 text-blue-600"></i> UPI / Online QR
+                </span>
+                <span id="stat-pay-upi" class="font-black font-mono text-gray-900 dark:text-white">₹0.00</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                <div id="bar-pay-upi" class="bg-blue-500 h-full rounded-full transition-all duration-500"
+                  style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 space-y-1.5">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  <i data-lucide="credit-card" class="w-4 h-4 text-purple-600"></i> Card (POS Machine)
+                </span>
+                <span id="stat-pay-card" class="font-black font-mono text-gray-900 dark:text-white">₹0.00</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                <div id="bar-pay-card" class="bg-purple-500 h-full rounded-full transition-all duration-500"
+                  style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Selling Dishes -->
+        <div
+          class="bg-white dark:bg-gray-800 p-4 sm:p-5 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+          <h3 class="font-extrabold text-sm text-gray-900 dark:text-white mb-3 flex items-center gap-1.5">
+            <i data-lucide="award" class="w-4 h-4 text-amber-500"></i>
+            <span>Top Popular Dishes Leaderboard</span>
+          </h3>
+          <div id="stat-top-items" class="space-y-1">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 4: MENU & DISH MANAGEMENT
+         ===================================================================== -->
+    <section id="tab-content-menu" class="hidden space-y-4">
+      <div
+        class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+        <div>
+          <h2 class="text-base font-extrabold text-gray-900 dark:text-white">Menu & Dish Catalog</h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Add dishes, set prices, mark in-stock / out-of-stock</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="App.openAddItemModal()"
+            class="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs touch-press transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Add New Dish</span>
+          </button>
+          <button onclick="App.resetDefaultMenu()"
+            class="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-xl touch-press"
+            title="Reset to Sample Menu">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Menu Items List -->
+      <div id="menu-manage-items-list" class="space-y-2.5">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 5: SETTINGS & RESTAURANT PROFILE
+         ===================================================================== -->
+    <section id="tab-content-settings" class="hidden space-y-4">
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs">
+        <h2 class="text-base font-extrabold text-gray-900 dark:text-white">Restaurant Profile & Receipt Layout</h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400">These details appear on your printed thermal receipts, KOTs,
+          and WhatsApp invoices</p>
+      </div>
+
+      <form onsubmit="App.saveSettingsForm(event)"
+        class="bg-white dark:bg-gray-800 p-4 sm:p-5 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs space-y-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Restaurant / Cafe Name</label>
+            <input id="setting-store-name" type="text" required
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-red-500/20" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Tagline / Slogan</label>
+            <input id="setting-tagline" type="text"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500/20" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
+            <input id="setting-phone" type="tel"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500/20" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Address / Location</label>
+            <input id="setting-address" type="text"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500/20" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">GSTIN / Tax ID</label>
+            <input id="setting-gstin" type="text"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white uppercase font-mono" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Currency Symbol</label>
+            <input id="setting-currency" type="text" value="₹"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white font-mono font-bold" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">GST / Tax Percentage (%)</label>
+            <input id="setting-tax-rate" type="number" step="0.5" value="5"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white font-bold" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">UPI ID for Payment QR Code (e.g.
+              name@upi)</label>
+            <input id="setting-upi-id" type="text" placeholder="yourbusiness@upi"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white font-mono" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Receipt Footer Note</label>
+            <input id="setting-receipt-footer" type="text"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-gray-900 dark:text-white" />
+          </div>
+        </div>
+
+        <button type="submit"
+          class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-xs touch-press transition">
+          Save Settings
+        </button>
+      </form>
+
+      <!-- Data Backup & Device Sync -->
+      <div
+        class="bg-white dark:bg-gray-800 p-4 sm:p-5 rounded-2xl border border-gray-150 dark:border-gray-700 shadow-2xs space-y-3">
+        <h3 class="font-extrabold text-sm text-gray-900 dark:text-white">Data Backup & Device Sync</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Export your entire restaurant database as a .json backup to
+          transfer between your phone, tablet, and PC.</p>
+
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          <button type="button" onclick="App.exportBackup()"
+            class="bg-gray-900 dark:bg-black text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 touch-press">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Export Backup JSON</span>
+          </button>
+
+          <label
+            class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer touch-press">
+            <i data-lucide="upload" class="w-4 h-4"></i>
+            <span>Restore Backup</span>
+            <input type="file" accept=".json" onchange="App.importBackup(event)" class="hidden">
+          </label>
+
+          <button type="button" onclick="App.resetAll()"
+            class="text-red-600 dark:text-red-400 hover:text-red-700 text-xs font-bold px-3 py-2 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl">
+            Reset All Data
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Developer Credits -->
+    <footer
+      class="mt-10 pt-6 pb-8 border-t border-gray-200 dark:border-gray-800 text-center text-xs text-gray-500 dark:text-gray-400">
+      <p class="font-extrabold text-gray-800 dark:text-gray-200 text-sm">QuickBite Food Billing & POS System</p>
+      <p class="mt-2 text-xs flex flex-wrap items-center justify-center gap-1.5">
+        <span>Developed by</span>
+        <span
+          class="font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 px-2.5 py-0.5 rounded-lg tracking-wider uppercase text-[11px]">
+          ATHIP, AADHIL, KIRUBA, MOUSIK, KAMESH
+        </span>
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- =========================================================================
+       FLOATING MOBILE CART BAR (Visible on mobile when items added)
+       ========================================================================= -->
+  <div id="mobile-cart-float-bar" class="hidden lg:hidden fixed bottom-16 left-3 right-3 z-30 animate-slide-up">
+    <div onclick="App.openMobileCartDrawer()"
+      class="bg-gray-900 dark:bg-black text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center justify-between cursor-pointer touch-press border border-gray-800">
+      <div class="flex items-center gap-2.5">
+        <span id="float-cart-count" class="bg-red-600 text-white font-black text-xs px-2.5 py-0.5 rounded-full">0
+          Items</span>
+        <span class="text-xs text-gray-300 font-medium">Review Bill</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="float-cart-total" class="font-black text-base font-mono text-white">₹0.00</span>
+        <i data-lucide="chevron-up" class="w-4 h-4 text-gray-400"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MOBILE BOTTOM NAVIGATION BAR
+       ========================================================================= -->
+  <nav
+    class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 px-2 py-1 flex items-center justify-around">
+    <button id="nav-btn-pos" onclick="App.switchTab('pos')"
+      class="flex flex-col items-center py-1 px-3 text-red-600 dark:text-red-500 font-bold transition touch-press">
+      <i data-lucide="utensils" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Order POS</span>
+    </button>
+
+    <button id="nav-btn-orders" onclick="App.switchTab('orders')"
+      class="relative flex flex-col items-center py-1 px-3 text-gray-500 dark:text-gray-400 transition touch-press">
+      <i data-lucide="chef-hat" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Kitchen</span>
+      <span
+        class="kitchen-badge-count hidden absolute top-0.5 right-2 bg-amber-500 text-white font-mono font-black text-[9px] px-1 py-0.2 rounded-full">0</span>
+    </button>
+
+    <button id="nav-btn-analytics" onclick="App.switchTab('analytics')"
+      class="flex flex-col items-center py-1 px-3 text-gray-500 dark:text-gray-400 transition touch-press">
+      <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Sales</span>
+    </button>
+
+    <button id="nav-btn-menu" onclick="App.switchTab('menu')"
+      class="flex flex-col items-center py-1 px-3 text-gray-500 dark:text-gray-400 transition touch-press">
+      <i data-lucide="layers" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Menu</span>
+    </button>
+
+    <button id="nav-btn-settings" onclick="App.switchTab('settings')"
+      class="flex flex-col items-center py-1 px-3 text-gray-500 dark:text-gray-400 transition touch-press">
+      <i data-lucide="settings" class="w-5 h-5"></i>
+      <span class="text-[10px] mt-0.5">Settings</span>
+    </button>
+  </nav>
+
+  <!-- =========================================================================
+       MOBILE CART & CHECKOUT SLIDE-UP DRAWER
+       ========================================================================= -->
+  <div id="mobile-cart-drawer"
+    class="hidden lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex flex-col justify-end">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-t-3xl max-h-[88vh] flex flex-col p-4 shadow-2xl animate-slide-up border-t border-gray-200 dark:border-gray-700">
+
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700">
+        <div class="flex items-center gap-2">
+          <i data-lucide="receipt" class="w-5 h-5 text-red-600"></i>
+          <h3 class="font-black text-base text-gray-900 dark:text-white">Active Order & Bill</h3>
+        </div>
+        <button onclick="App.closeMobileCartDrawer()"
+          class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-full touch-press">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Table & Customer Details -->
+      <div class="py-2.5 space-y-2 border-b border-gray-100 dark:border-gray-700">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-gray-500 dark:text-gray-400">Order For:</span>
+          <select id="cart-table-select-mobile"
+            class="table-select-elem flex-1 text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-xl px-2.5 py-1.5 border-0">
+            <!-- Populated -->
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" placeholder="Customer Name"
+            oninput="OrdersManager.customerName = this.value; OrdersManager.persistCart();"
+            class="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-2.5 py-1.5" />
+          <input type="tel" placeholder="WhatsApp Phone"
+            oninput="OrdersManager.customerPhone = this.value; OrdersManager.persistCart();"
+            class="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-2.5 py-1.5" />
+        </div>
+      </div>
+
+      <!-- Items List -->
+      <div
+        class="cart-items-container flex-1 overflow-y-auto py-2 divide-y divide-gray-100 dark:divide-gray-700 max-h-48">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Calculations Breakdown -->
+      <div class="pt-2 border-t border-gray-100 dark:border-gray-700 space-y-1.5 text-xs">
+        <div class="flex justify-between text-gray-600 dark:text-gray-400">
+          <span>Subtotal:</span>
+          <span id="cart-subtotal-mobile" class="font-bold font-mono text-gray-900 dark:text-white">₹0.00</span>
+        </div>
+        <div id="cart-discount-row-mobile" class="hidden flex justify-between text-emerald-600">
+          <span>Discount:</span>
+          <span id="cart-discount-amt-mobile" class="font-bold font-mono">-₹0.00</span>
+        </div>
+        <div id="cart-tax-row-mobile" class="hidden flex justify-between text-gray-600 dark:text-gray-400">
+          <span id="cart-tax-label-mobile">GST:</span>
+          <span id="cart-tax-amt-mobile" class="font-bold font-mono text-gray-900 dark:text-white">+₹0.00</span>
+        </div>
+        <div
+          class="pt-2 border-t border-dashed border-gray-200 dark:border-gray-700 flex justify-between items-baseline">
+          <span class="font-black text-xs uppercase text-gray-800 dark:text-gray-200">Total Payable:</span>
+          <span id="cart-grand-total-mobile" class="font-black text-xl text-red-600 font-mono">₹0.00</span>
+        </div>
+
+        <!-- Payment selector -->
+        <div class="grid grid-cols-3 gap-1.5 pt-1">
+          <button type="button" data-method="cash"
+            class="payment-method-btn py-1.5 text-xs font-bold rounded-xl border text-center">Cash</button>
+          <button type="button" data-method="upi"
+            class="payment-method-btn py-1.5 text-xs font-bold rounded-xl border text-center">UPI/QR</button>
+          <button type="button" data-method="card"
+            class="payment-method-btn py-1.5 text-xs font-bold rounded-xl border text-center">Card</button>
+        </div>
+
+        <button onclick="App.processCheckout()"
+          class="w-full bg-red-600 hover:bg-red-700 text-white font-black text-sm py-3 rounded-xl shadow-md touch-press flex items-center justify-center gap-2 transition mt-2">
+          <i data-lucide="receipt-text" class="w-4 h-4"></i>
+          <span>PRINT BILL & TOKEN</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 1: THERMAL RECEIPT & KOT PREVIEW MODAL
+       ========================================================================= -->
+  <div id="receipt-modal"
+    class="hidden app-modal fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div
+      class="bg-gray-100 dark:bg-gray-900 rounded-3xl w-full max-w-md max-h-[95vh] flex flex-col shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
+
+      <!-- Modal Header -->
+      <div
+        class="bg-white dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between no-print">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+          </div>
+          <h3 class="font-extrabold text-sm text-gray-900 dark:text-white">Bill Receipt & Token Slip</h3>
+        </div>
+        <button onclick="App.closeReceiptModal()"
+          class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-xl">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Printable Thermal Slip Container -->
+      <div class="flex-1 overflow-y-auto p-4 flex justify-center bg-gray-100 dark:bg-gray-900">
+        <div id="receipt-render-box" class="w-full">
+          <!-- Dynamic Thermal Receipt or KOT HTML -->
+        </div>
+      </div>
+
+      <!-- Action Buttons Toolbar (Print, KOT, WhatsApp, Copy Text, Download TXT) -->
+      <div
+        class="bg-white dark:bg-gray-800 p-3 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 sm:grid-cols-5 gap-1.5 no-print">
+        <button onclick="App.printReceipt()"
+          class="bg-gray-900 dark:bg-black hover:bg-black text-white text-[11px] font-bold py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 touch-press">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Print</span>
+        </button>
+
+        <button onclick="App.printKot()"
+          class="bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 touch-press">
+          <i data-lucide="chef-hat" class="w-3.5 h-3.5"></i>
+          <span>KOT</span>
+        </button>
+
+        <button onclick="App.shareOnWhatsApp()"
+          class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 touch-press">
+          <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+          <span>WhatsApp</span>
+        </button>
+
+        <!-- NEW FEATURE: Copy Text -->
+        <button onclick="App.copyBillText()"
+          class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-[11px] font-bold py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 touch-press"
+          title="Copy bill message to clipboard">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy</span>
+        </button>
+
+        <!-- NEW FEATURE: Download Bill File -->
+        <button onclick="App.downloadBillTxt()"
+          class="col-span-2 sm:col-span-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-[11px] font-bold py-2 px-1.5 rounded-xl flex items-center justify-center gap-1 touch-press"
+          title="Save as Text Receipt File">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+          <span>File</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 2: ADD / EDIT MENU ITEM MODAL
+       ========================================================================= -->
+  <div id="item-form-modal"
+    class="hidden app-modal fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-md p-5 shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700">
+        <h3 id="item-modal-title" class="font-extrabold text-sm text-gray-900 dark:text-white">Add New Food Item</h3>
+        <button onclick="document.getElementById('item-form-modal').classList.add('hidden')"
+          class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="App.saveItemForm(event)" class="mt-3.5 space-y-3 text-xs">
+        <input type="hidden" id="item-form-id">
+        <div>
+          <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Dish Name</label>
+          <input id="item-form-name" type="text" required placeholder="e.g. Crispy Chicken Burger"
+            class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Price (₹)</label>
+            <input id="item-form-price" type="number" step="0.5" required placeholder="149"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2 font-bold font-mono" />
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Category</label>
+            <select id="item-form-category"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2 font-semibold">
+              <option value="burgers">Burgers & Wraps</option>
+              <option value="pizza">Artisan Pizzas</option>
+              <option value="biryani">Biryani & Rice</option>
+              <option value="starters">Starters & Grills</option>
+              <option value="drinks">Drinks & Shakes</option>
+              <option value="desserts">Desserts & Bakes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Badge Tag (Optional)</label>
+            <input id="item-form-tag" type="text" placeholder="e.g. Bestseller / Spicy 🔥"
+              class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2" />
+          </div>
+          <div class="flex items-end pb-2">
+            <label class="flex items-center gap-2 cursor-pointer font-bold text-gray-700 dark:text-gray-300">
+              <input type="checkbox" id="item-form-veg" class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+              <span>Pure Vegetarian</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Description (Optional)</label>
+          <textarea id="item-form-desc" rows="2" placeholder="Appetizing description"
+            class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Photo Image URL (Optional)</label>
+          <input id="item-form-image" type="url" placeholder="https://..."
+            class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2 font-mono text-[11px]" />
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="document.getElementById('item-form-modal').classList.add('hidden')"
+            class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold">Cancel</button>
+          <button type="submit"
+            class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-xs">Save Dish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 3: QUICK OFF-MENU CUSTOM DISH POPUP
+       ========================================================================= -->
+  <div id="quick-item-modal"
+    class="hidden app-modal fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-sm p-5 shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="font-extrabold text-sm text-gray-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-red-600"></i>
+          <span>Add Off-Menu Custom Item</span>
+        </h3>
+        <button onclick="document.getElementById('quick-item-modal').classList.add('hidden')" class="p-1 text-gray-400">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="App.addQuickCustomItem(event)" class="mt-3.5 space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Item / Dish Name</label>
+          <input id="quick-item-name" type="text" required placeholder="e.g. Special Thali / Extra Butter"
+            class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2 font-semibold" />
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 dark:text-gray-300 mb-1">Price (₹)</label>
+          <input id="quick-item-price" type="number" step="0.5" required placeholder="99"
+            class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2 font-bold font-mono" />
+        </div>
+        <div>
+          <label class="flex items-center gap-2 cursor-pointer font-bold text-gray-700 dark:text-gray-300">
+            <input type="checkbox" id="quick-item-veg" checked class="rounded text-emerald-600 w-4 h-4">
+            <span>Vegetarian</span>
+          </label>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="document.getElementById('quick-item-modal').classList.add('hidden')"
+            class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold">Cancel</button>
+          <button type="submit"
+            class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-xs">Add to Bill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 4: COOKING NOTE POPUP
+       ========================================================================= -->
+  <div id="item-note-modal"
+    class="hidden app-modal fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-sm p-5 shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700">
+        <div>
+          <h3 class="font-extrabold text-sm text-gray-900 dark:text-white">Cooking Note</h3>
+          <p id="note-modal-item-name" class="text-xs text-red-600 dark:text-red-400 font-bold"></p>
+        </div>
+        <button onclick="document.getElementById('item-note-modal').classList.add('hidden')" class="p-1 text-gray-400">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="mt-3 space-y-2.5 text-xs">
+        <input id="note-modal-input" type="text" placeholder="e.g. Less spicy, Extra crispy, No onions"
+          class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl px-3 py-2 font-medium" />
+
+        <!-- Quick Note Presets -->
+        <div class="flex flex-wrap gap-1.5 pt-1">
+          <button type="button" onclick="App.applyQuickNote('Less Spicy')"
+            class="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-[11px] font-semibold">🌶️ Less Spicy</button>
+          <button type="button" onclick="App.applyQuickNote('Extra Spicy')"
+            class="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-[11px] font-semibold">🔥 Extra Spicy</button>
+          <button type="button" onclick="App.applyQuickNote('No Onion/Garlic')"
+            class="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-[11px] font-semibold">🧅 No Onion</button>
+          <button type="button" onclick="App.applyQuickNote('Parcel Separate')"
+            class="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-[11px] font-semibold">📦 Parcel</button>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2">
+          <button type="button" onclick="document.getElementById('item-note-modal').classList.add('hidden')"
+            class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold">Cancel</button>
+          <button type="button" onclick="App.saveItemNote()"
+            class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold">Attach Note</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 5: CLEAN STREAMLINED PHONE INSTALL GUIDE
+       ========================================================================= -->
+  <div id="phone-guide-modal"
+    class="hidden app-modal fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-3xl w-full max-w-md p-5 shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-950/60 text-red-600 flex items-center justify-center">
+            <i data-lucide="smartphone" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm text-gray-900 dark:text-white">Run on Mobile Phone</h3>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400">Android, iPhone & Tablet PWA</p>
+          </div>
+        </div>
+        <button onclick="document.getElementById('phone-guide-modal').classList.add('hidden')"
+          class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3 text-xs text-gray-700 dark:text-gray-300">
+        <div class="p-3 bg-red-50 dark:bg-red-950/40 rounded-2xl border border-red-100 dark:border-red-900/50">
+          <strong class="text-red-900 dark:text-red-300 block mb-1">1. Free Instant Hosting</strong>
+          <p class="text-gray-600 dark:text-gray-300">Drag & drop this folder at <a href="https://app.netlify.com/drop"
+              target="_blank" class="text-red-600 underline font-bold">netlify.com/drop</a> or host on Vercel/GitHub
+            Pages for a free live URL.</p>
+        </div>
+
+        <div class="p-3 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
+          <strong class="text-gray-900 dark:text-white block mb-1">2. Local Wi-Fi Run</strong>
+          <p class="text-gray-600 dark:text-gray-400">Run <code
+              class="bg-gray-200 dark:bg-gray-800 px-1 py-0.5 rounded font-mono">start-server.ps1</code> and open the IP
+            on your phone on the same Wi-Fi.</p>
+        </div>
+
+        <div class="p-3 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
+          <strong class="text-gray-900 dark:text-white block mb-1">3. Install on Home Screen</strong>
+          <p class="text-gray-600 dark:text-gray-400">On Chrome/Safari tap Menu &rarr; <strong>"Add to Home
+              Screen"</strong> / <strong>"Install App"</strong> for full-screen offline use.</p>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+        <button onclick="document.getElementById('phone-guide-modal').classList.add('hidden')"
+          class="bg-gray-900 dark:bg-black text-white font-bold text-xs px-5 py-2.5 rounded-xl touch-press">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Toast Notification Popup -->
+  <div id="toast-notification"
+    class="hidden toast-msg fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 dark:bg-black text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 border border-gray-800 pointer-events-none">
+    <!-- Injected via showToast -->
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/billing.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
